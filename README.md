@@ -1,14 +1,37 @@
-# Project
+# aiida-dynamic-workflows
+An AiiDA plugin for dynamically composing workflows from Python functions that run as CalcJobs.
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+**This is experimental, pre-alpha software**.
 
-As the maintainer of this project, please make a few updates:
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+## Prerequisites
+An environment where the _development_ version of AiiDA is installed.
+This plugin makes use of a bugfix on the development branch, which will
+not be included in an AiiDA release until v2.0.
+
+
+## Installing
+As pre-alpha software, this package is **not** released on PyPI.
+Currently the only way to install the plugin is to clone the
+repository and use `pip`:
+```bash
+pip install -e .
+```
+
+
+## Initialization
+This plugin uses Conda for managing Python environments on remote computers.
+Any Computers that you use with this plugin must have a `conda_dir` property
+that contains an absolute path to the Conda directory on the machine
+(typically something like `/home/{username}/miniconda3`.
+The `add_extras.py` script in `example_cluster_setup/` can help you with this
+
+
+## Examples
+The [`examples/`](./examples) directory contains Jupyter notebooks that illustrate the main
+features of `aiida-dynamic-workflows`. The notebooks are in Markdown format, and so require
+the Jupyter plugin [jupytext](https://jupytext.readthedocs.io/en/latest/) in order to run them.
+
 
 ## Contributing
 
@@ -26,8 +49,8 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 ## Trademarks
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
+trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
