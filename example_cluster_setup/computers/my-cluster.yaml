@@ -1,0 +1,15 @@
+---
+description: "Cluster with Slurm installeed"
+label: "my-cluster"
+hostname: "headnode.mycluster.whatever"
+transport: core.ssh
+scheduler: "dynamic_workflows.slurm"
+work_dir: "/home/{username}/.aiida_run"
+mpirun_command: "mpirun -np {tot_num_mpiprocs}"
+mpiprocs_per_machine: "1"
+shebang: "#!/bin/bash"
+prepend_text: " "
+append_text: " "
+# Extra properties
+extras:
+    nfs_hostname: "nfs.mycluster.whatever"

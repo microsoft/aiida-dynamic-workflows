@@ -1,0 +1,6 @@
+---
+# You can tweak these settings
+timeout: 120  # SSH connections can live for 2 minutes
+safe_interval: 0  # Can make as many SSH connections as we like
+compress: true  # Compress files for transfer
+key_policy: AutoAddPolicy  # Automatically fixes missing hosts in known_hosts
