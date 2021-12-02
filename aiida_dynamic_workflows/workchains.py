@@ -262,7 +262,7 @@ def result_mask(job, expected_shape) -> np.ndarray:
 
 
 class RestartedPyCalcJob(WorkChain):
-    """Workchain that resubmits a PyCalcJOb until it succeeds."""
+    """Workchain that resubmits a PyCalcJob until it succeeds."""
 
     _node_class = WorkChainNode
 

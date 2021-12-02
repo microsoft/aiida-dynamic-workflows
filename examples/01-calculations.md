@@ -226,7 +226,7 @@ a
 
 `.fetch_value()` uses the default Aiida transport, and so is quite inefficient for loading many files (as in this example)
 
-Passing `local_files=True` is useful when the Aiida working directory on `my-cluster` is actually mounted locally on the machine where this notebook is ruhning.
+Passing `local_files=True` is useful when the Aiida working directory on `my-cluster` is actually mounted locally on the machine where this notebook is running.
 
 ```python
 remote_mapped_values.get_remote_path()

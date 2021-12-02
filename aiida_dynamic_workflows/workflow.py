@@ -88,7 +88,7 @@ class OutputAction(Action):
                 workchain.report(
                     f"Failed to set output '{to_name}': '{from_name}' "
                     "does not exist on the workchain context (did "
-                    "the step that produces this output fail?"
+                    "the step that produces this output fail?)"
                 )
 
 
