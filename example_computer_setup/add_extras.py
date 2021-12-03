@@ -34,11 +34,13 @@ def main(profile, config):
 
     echo.echo_success(f"Added the following properties to {label}: {extras}")
 
-    echo.echo_info(f"Setting the conda directory for computer {label}")
-    conda_dir = get_conda_dir(computer)
-    computer.set_property("conda_dir", conda_dir)
-    computer.store()
-    echo.echo_success(f"Set the Conda directory on {label} to '{conda_dir}'")
+    if not "conda_dir" in extras:
+        echo.echo_info(f"Setting the conda directory for computer {label}")
+        conda_dir = get_conda_dir(computer)
+        computer.set_property("conda_dir", conda_dir)
+        computer.store()
+
+        echo.echo_success(f"Set the Conda directory on {label} to '{conda_dir}'")
 
 
 def get_conda_dir(computer):
@@ -52,7 +54,7 @@ def get_conda_dir(computer):
     label = computer.label
     with computer.get_transport() as t:
         rv, stdout, stderr = t.exec_command_wait(
-            "conda activate base; echo $CONDA_PREFIX"
+            "set -e; conda activate base; echo $CONDA_PREFIX"
         )
         conda_dir = stdout.strip() or None
         if not conda_dir:
