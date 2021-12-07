@@ -41,6 +41,11 @@ def main(profile, config):
         computer.store()
 
         echo.echo_success(f"Set the Conda directory on {label} to '{conda_dir}'")
+    else:
+        with computer.get_transport() as t:
+            if not t.isdir(x):
+                conda_dir = extras["conda_dir"]
+                echo.echo_warning(f"'{conda_dir}' is not a directory on {label}")
 
 
 def get_conda_dir(computer):

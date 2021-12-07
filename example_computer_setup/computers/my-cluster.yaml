@@ -13,4 +13,4 @@ append_text: " "
 # Extra properties
 extras:
    # note: will be autodetected if not specified
-   conda_dir: "/home/myuser/miniconda3"
+   conda_dir: "/home/{username}/miniconda3"
