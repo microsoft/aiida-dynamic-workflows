@@ -34,7 +34,7 @@ def main(profile, config):
 
     echo.echo_success(f"Added the following properties to {label}: {extras}")
 
-    if not "conda_dir" in extras:
+    if "conda_dir" not in extras:
         echo.echo_info(f"Setting the conda directory for computer {label}")
         conda_dir = get_conda_dir(computer)
         computer.set_property("conda_dir", conda_dir)
@@ -42,9 +42,9 @@ def main(profile, config):
 
         echo.echo_success(f"Set the Conda directory on {label} to '{conda_dir}'")
     else:
+        conda_dir = extras["conda_dir"]
         with computer.get_transport() as t:
-            if not t.isdir(x):
-                conda_dir = extras["conda_dir"]
+            if not t.isdir(conda_dir):
                 echo.echo_warning(f"'{conda_dir}' is not a directory on {label}")
 
 
