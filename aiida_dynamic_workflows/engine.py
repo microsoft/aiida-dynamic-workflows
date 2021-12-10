@@ -41,6 +41,7 @@ class ExecutionEnvironment:
 
 
 def code_from_conda_env(conda_env: str, computer_name: str) -> aiida.orm.Code:
+    """Create AiiDA Code for python interpreter from conda environment."""
     c = aiida.orm.load_computer(computer_name)
     with c.get_transport() as t:
         username = t.whoami()
@@ -56,7 +57,7 @@ def code_from_conda_env(conda_env: str, computer_name: str) -> aiida.orm.Code:
             [f"source {conda_initscript}", f"conda activate {conda_env}"]
         )
 
-        r, stdout, stderr = t.exec_command_wait(prepend_text)
+        r, _stdout, stderr = t.exec_command_wait(prepend_text)
 
         if r != 0:
             raise RuntimeError(

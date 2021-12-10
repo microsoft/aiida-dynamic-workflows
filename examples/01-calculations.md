@@ -7,7 +7,7 @@ This notebook shows how to define and run individual calculations with aiida-dyn
 ### This example assumes you already have Aiida set up, as well as the relevant codes/computers
 
 
-If that's not your case, check out the `config` directory.
+If that's not your case, check out the `example_computer_setup` directory.
 
 
 ### The imports
@@ -53,8 +53,10 @@ cluster_env = flows.engine.execution_environment(
 We can also create an execution environment that uses the Conda environment on _this_ machine:
 
 ```python
-local = flows.engine.execution_environment("py39", "localhost")
+local_env = flows.engine.execution_environment("py39", "localhost")
 ```
+
+Let's use the cluster execution environment going forward.
 
 ```python
 env = cluster_env
@@ -121,11 +123,14 @@ Finally we will actually run this specification.
 
 Even though the notebook is blocked, execution of `add` is actually happening _on the cluster_.
 
-If you inspect the (verbose) logs you'll see "copying file/folder" + Slurm-related stuff
-
 ```python
 r = aiida.engine.run(z.on(env))
 ```
+
+If the execution of the cell above is hanging for too long, you may want to drop to the command line and inspect the running processes, e.g. using via `verdi process list`.
+The (verbose) daemon logs should be showing "copying file/folder" + Slurm-related stuff.
+
+If you're having trouble with remote execution, feel free to continue through the rest of the tutorial on your local computer by setting `env=local_env`.
 
 ```python
 %%time

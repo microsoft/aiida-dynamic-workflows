@@ -28,7 +28,7 @@ for config_file in "$SCRIPT_DIR"/computers/*.yaml; do
     if [ $computer = localhost ]; then
         verdi --profile $profile computer configure core.local $computer -n --safe-interval 0
     else
-        verdi --profile $profile computer configure core.ssh $computer -n --config "$SCRIPT_DIR/ssh_transport.yaml"
+        verdi --profile $profile computer configure core.ssh $computer -n --config "$SCRIPT_DIR/computers/ssh_transport.yaml"
     fi
 
     "$SCRIPT_DIR/add_extras.py" --profile $profile --config $config_file
