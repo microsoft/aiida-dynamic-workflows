@@ -21,7 +21,7 @@ jobs:
 
     # remove after aiida 2.0 is released
     - name: Install AiiDA development version
-      run: pip install git+git://github.com/aiidateam/aiida-core.git@1890bab724956220c306bd9794457a5657739174
+      run: pip install git+https://github.com/aiidateam/aiida-core.git@1890bab724956220c306bd9794457a5657739174
 
     - name: Install python dependencies
       run: |
