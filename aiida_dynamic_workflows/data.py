@@ -257,7 +257,13 @@ class PyRemoteArray(aiida.orm.RemoteData):
                 yield from ex.map(_load, repeat(dir), file_gen)
 
         if local_files:
-            yield from _iter_files(Path(self.get_remote_path()))
+            # If the array's directory does not exist then it's
+            # not actually mounted locally.
+            root_dir = Path(self.get_remote_path())
+            if not root_dir.is_dir():
+                raise FileNotFoundError(str(root_dir))
+            else:
+                yield from _iter_files(root_dir)
         else:
             with tempfile.TemporaryDirectory() as temp_dir:
                 dir = Path(os.path.join(temp_dir, "values"))
