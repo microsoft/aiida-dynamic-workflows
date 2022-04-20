@@ -235,7 +235,8 @@ class _AiidaData:
 
 
 def _copy_builder_contents(
-    to: aiida.engine.ProcessBuilderNamespace, frm: aiida.engine.ProcessBuilderNamespace,
+    to: aiida.engine.ProcessBuilderNamespace,
+    frm: aiida.engine.ProcessBuilderNamespace,
 ):
     """Recursively copy the contents of 'frm' into 'to'.
 

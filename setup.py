@@ -25,5 +25,6 @@ version, cmdclass = get_version_and_cmdclass("aiida_dynamic_workflows")
 # determined dynamically from git tags (using 'miniver'), so it needs
 # to be done here.
 setup(
-    version=version, cmdclass=cmdclass,
+    version=version,
+    cmdclass=cmdclass,
 )

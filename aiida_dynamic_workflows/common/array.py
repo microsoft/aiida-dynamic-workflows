@@ -23,7 +23,11 @@ class FileBasedObjectArray:
     """
 
     def __init__(
-        self, folder, shape, strides=None, filename_template=filename_template,
+        self,
+        folder,
+        shape,
+        strides=None,
+        filename_template=filename_template,
     ):
         self.folder = pathlib.Path(folder).absolute()
         self.shape = tuple(shape)

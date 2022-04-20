@@ -206,12 +206,16 @@ class RestartedPyMapJob(WorkChain):
 
         if exception_arrays:
             r = self.runner.run_get_node(
-                merge_remote_arrays, **list_to_dict(exception_arrays),
+                merge_remote_arrays,
+                **list_to_dict(exception_arrays),
             )
             context_update["exception"] = r.node
 
         for k, arrays in return_value_arrays.items():
-            r = self.runner.run_get_node(merge_remote_arrays, **list_to_dict(arrays),)
+            r = self.runner.run_get_node(
+                merge_remote_arrays,
+                **list_to_dict(arrays),
+            )
             context_update[f"return_values.{k}"] = r.node
 
         return self.to_context(**context_update)
@@ -286,7 +290,9 @@ class RestartedPyCalcJob(WorkChain):
             message="The maximum number of restarts was exceeded.",
         )
         spec.exit_code(
-            411, "CHILD_PROCESS_EXCEPTED", message="The child process excepted.",
+            411,
+            "CHILD_PROCESS_EXCEPTED",
+            message="The child process excepted.",
         )
         spec.outline(
             cls.setup,

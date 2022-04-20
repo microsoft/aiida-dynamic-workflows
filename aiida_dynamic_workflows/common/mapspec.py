@@ -161,7 +161,9 @@ class MapSpec:
         )
 
     def input_keys(
-        self, shape: Tuple[int, ...], linear_index: int,
+        self,
+        shape: Tuple[int, ...],
+        linear_index: int,
     ) -> Dict[str, Tuple[Union[slice, int]]]:
         """Return keys for indexing inputs of this map.
 

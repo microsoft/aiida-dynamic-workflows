@@ -145,7 +145,11 @@ def _check_pyfunctions_compatible(a: PyFunction, b: PyFunction):
 def from_pyfunction(f: PyFunction) -> Step:
     """Construct a Step corresponding to applying a PyFunction."""
     _check_valid_pyfunction(f)
-    return Process(builder=engine.apply(f), parameters=f.parameters, returns=f.returns,)
+    return Process(
+        builder=engine.apply(f),
+        parameters=f.parameters,
+        returns=f.returns,
+    )
 
 
 def map_(f: PyFunction, *args, **kwargs) -> Step:
@@ -287,7 +291,9 @@ class Outline:
     def parameters(self) -> Set[str]:
         """Parameters of the Outline."""
         raw_parameters = toolz.reduce(
-            set.union, (s.parameters for s in self._single_processes), set(),
+            set.union,
+            (s.parameters for s in self._single_processes),
+            set(),
         )
         return raw_parameters - self.all_outputs
 
@@ -304,7 +310,9 @@ class Outline:
     def all_outputs(self) -> Set[str]:
         """All outputs of this outline."""
         return toolz.reduce(
-            set.union, (s.returns for s in self._single_processes), set(),
+            set.union,
+            (s.returns for s in self._single_processes),
+            set(),
         )
 
     def visualize(self, as_png=False) -> Union[graphviz.Digraph]:
