@@ -16,6 +16,18 @@ then
     exit 1
 fi
 
+# Ensure profile is lowercase only
+
+function lowered () {
+    echo $1 | tr '[:upper:]' '[:lower:]'
+}
+
+if [ "$profile" != "$(lowered $profile)" ]
+then
+    echo "Profile name '$profile' is not lowercase"
+    exit 1
+fi
+
 verdi quicksetup --profile $profile
 
 for config_file in "$SCRIPT_DIR"/computers/*.yaml; do
