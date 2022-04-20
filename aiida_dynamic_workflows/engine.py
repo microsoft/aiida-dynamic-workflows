@@ -416,7 +416,12 @@ def _apply_pyfunction_resources(
 
     cores = resources.get("cores")
     if cores is not None:
-        options.resources["num_cores_per_mpiproc"] = int(cores)
+        # Re-assign the whole 'resources' input dict to avoid problems with
+        # serialization (also, mutating it seems to change the 'resources' for
+        # all other Builders, which is not good!).
+        options.resources = toolz.assoc(
+            options.resources, "num_cores_per_mpiproc", int(cores)
+        )
 
 
 def all_equal(seq):
