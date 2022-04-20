@@ -40,16 +40,26 @@ class PyCalcJob(aiida.engine.CalcJob):
     def define(cls, spec: aiida.engine.CalcJobProcessSpec):  # noqa: D102
         super().define(spec)
 
-        spec.input("func", valid_type=PyFunction, help="The function to execute")
+        spec.input(
+            "func",
+            valid_type=PyFunction,
+            help="The function to execute",
+        )
         spec.input_namespace(
-            "kwargs", dynamic=True, help="The (keyword) arguments to the function"
+            "kwargs",
+            dynamic=True,
+            help="The (keyword) arguments to the function",
         )
 
         spec.output_namespace(
-            "return_values", dynamic=True, help="The return value(s) of the function"
+            "return_values",
+            dynamic=True,
+            help="The return value(s) of the function",
         )
         spec.output(
-            "exception", required=False, help="The exception raised (if any)",
+            "exception",
+            required=False,
+            help="The exception raised (if any)",
         )
 
         spec.inputs["metadata"]["options"][
@@ -81,7 +91,8 @@ class PyCalcJob(aiida.engine.CalcJob):
 
     # TODO: refactor this; it is a bit of a mess
     def prepare_for_submission(
-        self, folder: aiida.common.folders.Folder,
+        self,
+        folder: aiida.common.folders.Folder,
     ) -> aiida.common.CalcInfo:  # noqa: D102
 
         # TODO: update "resources" given the resources specified on "py_func"

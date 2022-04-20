@@ -27,7 +27,8 @@ class PyCalcParser(aiida.parsers.Parser):
             # No actual retrieval occurs; we just store a reference
             # to the remote value.
             return PyRemoteData.from_remote_data(
-                calc.outputs.remote_folder, value_file,
+                calc.outputs.remote_folder,
+                value_file,
             )
 
         exception_file = "__exception__.pickle"
@@ -90,7 +91,8 @@ class PyMapParser(aiida.parsers.Parser):
             return PyRemoteArray(
                 computer=calc.computer,
                 remote_path=os.path.join(
-                    calc.outputs.remote_folder.get_remote_path(), return_value_name,
+                    calc.outputs.remote_folder.get_remote_path(),
+                    return_value_name,
                 ),
                 shape=expected_shape,
                 filename_template=common.array.filename_template,

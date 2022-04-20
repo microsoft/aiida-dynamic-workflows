@@ -99,7 +99,8 @@ def merge_job_arrays(jobs: List[JobInfo]) -> List[JobInfo]:
         "job_id": toolz.compose(job_array_id, toolz.first),
         "dispatch_time": min,
         "finish_time": toolz.compose(
-            max, toolz.curried.map(with_default(datetime.datetime.min)),
+            max,
+            toolz.curried.map(with_default(datetime.datetime.min)),
         ),
         "job_state": total_job_state,
         "raw_data": toolz.identity,

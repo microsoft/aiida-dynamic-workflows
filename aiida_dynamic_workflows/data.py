@@ -43,7 +43,8 @@ class PyFunction(aiida.orm.Data):
         super().__init__(**kwargs)
 
         self.put_object_from_filelike(
-            path="function.pickle", handle=io.BytesIO(cloudpickle.dumps(func)),
+            path="function.pickle",
+            handle=io.BytesIO(cloudpickle.dumps(func)),
         )
         self.set_attribute("resources", resources)
         self.set_attribute("returns", returns)
@@ -149,7 +150,8 @@ class PyOutline(aiida.orm.Data):
         super().__init__(**kwargs)
 
         self.put_object_from_filelike(
-            path="outline.pickle", handle=io.BytesIO(cloudpickle.dumps(outline)),
+            path="outline.pickle",
+            handle=io.BytesIO(cloudpickle.dumps(outline)),
         )
 
     @functools.cached_property
@@ -291,7 +293,8 @@ class PyRemoteArray(aiida.orm.RemoteData):
             v["name"] for v in self.listdir_withattributes() if not v["isdir"]
         )
         return np.array(
-            [self._file(i) not in existing_files for i in range(self.size)], dtype=bool,
+            [self._file(i) not in existing_files for i in range(self.size)],
+            dtype=bool,
         ).reshape(self.shape)
 
     @property
