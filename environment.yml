@@ -1,0 +1,15 @@
+name: dynamic-workflows-dev
+channels:
+    - conda-forge
+dependencies:
+    # General dependencies
+    - python=3.9
+    - graphviz
+    # dev dependencies
+    - pre-commit
+    - ipykernel   # for running notebooks
+    # used in example notebooks
+    - loky
+    - toolz
+    - pandas
+    - numpy
