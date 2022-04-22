@@ -52,7 +52,6 @@ class Geometry:
     x : float
     y : float
 
-
 @dataclass(frozen=True)
 class Mesh:
     geometry : Geometry
