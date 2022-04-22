@@ -8,4 +8,8 @@ dependencies:
     # dev dependencies
     - pre-commit
     - ipykernel   # for running notebooks
-    - loky  # used in example notebook
+    # used in example notebooks
+    - loky
+    - toolz
+    - pandas
+    - numpy
