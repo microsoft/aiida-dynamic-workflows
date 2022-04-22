@@ -84,18 +84,18 @@ def make_mesh(
     coarse_mesh_size: float,
 ) -> tuple[Mesh, Mesh]:
     time.sleep(5)  # do some work
-    return Mesh(geometry, mesh_size), Mesh(geometry, coarse_mesh_size)
+    return Mesh(geo, mesh_size), Mesh(geo, coarse_mesh_size)
 
 
 @step(returns="materials")
-def make_materials(geo: Geometry) -> MatData:
+def make_materials(geo: Geometry) -> Materials:
     time.sleep(5)  # do some work
-    return Materials(geometry, ["a", "b", "c"])
+    return Materials(geo, ["a", "b", "c"])
 
 
 @step(returns="electrostatics")
 def run_electrostatics(
-    mesh: MeshData, materials: Materials, V_left: float, V_right: float
+    mesh: Mesh, materials: Materials, V_left: float, V_right: float
 ) -> Electrostatics:
     time.sleep(10)  # do some work
     return Electrostatics(mesh, materials, [V_left, V_right])
@@ -123,7 +123,7 @@ model_flow = (
     .then(make_geometry)
     .then(
         # These 2 steps will be done at the same time
-        concurrently(make_mesh, make_mat_data)
+        concurrently(make_mesh, make_materials)
     )
 )
 
@@ -170,12 +170,12 @@ def modified_make_mesh(geo, mesh_size, coarse_mesh_size, mesh_error):
 
 
 @flows.step(returns="electrostatics")
-def modified_electrostatics(geo, mesh, mat_data, V_left, V_right, V_limits: tuple):
+def modified_electrostatics(geo, mesh, materials, V_left, V_right, V_limits: tuple):
     a, b = V_limits
     if not (a < V_left < b and a < V_right < b):
         raise ValueError(f"Voltages ({V_left}, {V_right}) out of acceptable range {V_limits}")
     else:
-        return original_electrostatics(geo, mesh, mat_data, V_left, V_right)
+        return original_electrostatics(mesh, materials, V_left, V_right)
 
 @flows.step(returns="charge")
 def modified_get_charge(electrostatics, failure_probability):
