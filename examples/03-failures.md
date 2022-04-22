@@ -12,6 +12,10 @@ To explore this we will take the workflows developed in [02-workflows.md](./02-w
 First we do the usual imports and define an execution environment
 
 ```python
+from dataclasses import dataclass
+import random
+import time
+
 import numpy as np
 import toolz
 ```
