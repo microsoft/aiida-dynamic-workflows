@@ -45,7 +45,7 @@ Next we define a bunch of individual "steps" from Python functions.
 as we saw in [01-calculations.md](./01-calculations.md), this will save the pickled function in the Aiida database
 
 ```python
-from flows import step
+from aiida_dynamic_workflows import step
 ```
 
 ```python
@@ -129,7 +129,7 @@ def average_charge(charge: "FileBasedObjectArray") -> float:
 Here we compose up 2 "workflows": `model_flow` and `electrostatics_flow`:
 
 ```python
-from flows.workflow import first, concurrently, map_, new_workflow
+from aiida_dynamic_workflows.workflow import first, concurrently, map_, new_workflow
 
 model_flow = (
     new_workflow(name="model_flow")

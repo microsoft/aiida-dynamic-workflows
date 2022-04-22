@@ -25,6 +25,7 @@ aiida.__version__
 
 ```python
 import aiida_dynamic_workflows as flows
+from aiida_dynamic_workflows import step
 
 flows.control.ensure_daemon_restarted()
 flows.__version__
@@ -115,7 +116,7 @@ def average_charge(charge: "FileBasedObjectArray") -> float:
 ```
 
 ```python
-from flows.workflow import first, concurrently, map_, new_workflow
+from aiida_dynamic_workflows.workflow import first, concurrently, map_, new_workflow
 
 model_flow = (
     new_workflow(name="model_flow")
