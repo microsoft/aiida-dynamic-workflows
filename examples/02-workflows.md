@@ -45,7 +45,7 @@ Next we define a bunch of individual "steps" from Python functions.
 as we saw in [01-calculations.md](./01-calculations.md), this will save the pickled function in the Aiida database
 
 ```python
-from flows import step
+from aiida_dynamic_workflows import step
 ```
 
 ```python
@@ -86,18 +86,18 @@ def make_mesh(
     coarse_mesh_size: float,
 ) -> tuple[Mesh, Mesh]:
     time.sleep(5)  # do some work
-    return Mesh(geometry, mesh_size), Mesh(geometry, coarse_mesh_size)
+    return Mesh(geo, mesh_size), Mesh(geo, coarse_mesh_size)
 
 
 @step(returns="materials")
-def make_materials(geo: Geometry) -> MatData:
+def make_materials(geo: Geometry) -> Materials:
     time.sleep(5)  # do some work
-    return Materials(geometry, ["a", "b", "c"])
+    return Materials(geo, ["a", "b", "c"])
 
 
 @step(returns="electrostatics")
 def run_electrostatics(
-    mesh: MeshData, materials: Materials, V_left: float, V_right: float
+    mesh: Mesh, materials: Materials, V_left: float, V_right: float
 ) -> Electrostatics:
     time.sleep(10)  # do some work
     return Electrostatics(mesh, materials, [V_left, V_right])
@@ -129,14 +129,14 @@ def average_charge(charge: "FileBasedObjectArray") -> float:
 Here we compose up 2 "workflows": `model_flow` and `electrostatics_flow`:
 
 ```python
-from flows.workflow import first, concurrently, map_, new_workflow
+from aiida_dynamic_workflows.workflow import first, concurrently, map_, new_workflow
 
 model_flow = (
     new_workflow(name="model_flow")
     .then(make_geometry)
     .then(
         # These 2 steps will be done at the same time
-        concurrently(make_mesh, make_mat_data)
+        concurrently(make_mesh, make_materials)
     )
 )
 

@@ -25,6 +25,7 @@ aiida.__version__
 
 ```python
 import aiida_dynamic_workflows as flows
+from aiida_dynamic_workflows import step
 
 flows.control.ensure_daemon_restarted()
 flows.__version__
@@ -50,7 +51,6 @@ In principle we could put this in a separate module, but this won't quite work u
 class Geometry:
     x : float
     y : float
-
 
 @dataclass(frozen=True)
 class Mesh:
@@ -83,18 +83,18 @@ def make_mesh(
     coarse_mesh_size: float,
 ) -> tuple[Mesh, Mesh]:
     time.sleep(5)  # do some work
-    return Mesh(geometry, mesh_size), Mesh(geometry, coarse_mesh_size)
+    return Mesh(geo, mesh_size), Mesh(geo, coarse_mesh_size)
 
 
 @step(returns="materials")
-def make_materials(geo: Geometry) -> MatData:
+def make_materials(geo: Geometry) -> Materials:
     time.sleep(5)  # do some work
-    return Materials(geometry, ["a", "b", "c"])
+    return Materials(geo, ["a", "b", "c"])
 
 
 @step(returns="electrostatics")
 def run_electrostatics(
-    mesh: MeshData, materials: Materials, V_left: float, V_right: float
+    mesh: Mesh, materials: Materials, V_left: float, V_right: float
 ) -> Electrostatics:
     time.sleep(10)  # do some work
     return Electrostatics(mesh, materials, [V_left, V_right])
@@ -115,14 +115,14 @@ def average_charge(charge: "FileBasedObjectArray") -> float:
 ```
 
 ```python
-from flows.workflow import first, concurrently, map_, new_workflow
+from aiida_dynamic_workflows.workflow import first, concurrently, map_, new_workflow
 
 model_flow = (
     new_workflow(name="model_flow")
     .then(make_geometry)
     .then(
         # These 2 steps will be done at the same time
-        concurrently(make_mesh, make_mat_data)
+        concurrently(make_mesh, make_materials)
     )
 )
 
@@ -139,6 +139,13 @@ electrostatics_flow = (
             "electrostatics[i, j] -> charge[i, j]"
         )
     ).then(average_charge)
+)
+
+total_flow = (
+    new_workflow(name="total_electrostatics")
+    .join(model_flow)
+    .join(electrostatics_flow)
+    .returning("electrostatics", average_charge="avg_electrostatic_charge")
 )
 ```
 
@@ -169,12 +176,12 @@ def modified_make_mesh(geo, mesh_size, coarse_mesh_size, mesh_error):
 
 
 @flows.step(returns="electrostatics")
-def modified_electrostatics(geo, mesh, mat_data, V_left, V_right, V_limits: tuple):
+def modified_electrostatics(geo, mesh, materials, V_left, V_right, V_limits: tuple):
     a, b = V_limits
     if not (a < V_left < b and a < V_right < b):
         raise ValueError(f"Voltages ({V_left}, {V_right}) out of acceptable range {V_limits}")
     else:
-        return original_electrostatics(geo, mesh, mat_data, V_left, V_right)
+        return original_electrostatics(mesh, materials, V_left, V_right)
 
 @flows.step(returns="charge")
 def modified_get_charge(electrostatics, failure_probability):
