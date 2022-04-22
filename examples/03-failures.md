@@ -140,6 +140,13 @@ electrostatics_flow = (
         )
     ).then(average_charge)
 )
+
+total_flow = (
+    new_workflow(name="total_electrostatics")
+    .join(model_flow)
+    .join(electrostatics_flow)
+    .returning("electrostatics", average_charge="avg_electrostatic_charge")
+)
 ```
 
 ## Modifying steps
