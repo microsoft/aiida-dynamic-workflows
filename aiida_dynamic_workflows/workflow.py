@@ -46,14 +46,14 @@ class Action(Single):
 class Concurrent(Step):
     """Step consisting of several concurrent steps."""
 
-    steps: List[Step]
+    steps: list[Step]
 
 
 @dataclass(frozen=True)
 class Sequential(Step):
     """Step consisting of several sequential steps."""
 
-    steps: List[Step]
+    steps: list[Step]
 
 
 @dataclass(frozen=True)
@@ -61,8 +61,8 @@ class Process(Single):
     """Step consisting of a single Aiida Process."""
 
     builder: aiida.engine.ProcessBuilder
-    parameters: Tuple[str]
-    returns: Tuple[str]
+    parameters: tuple[str]
+    returns: tuple[str]
 
     def __str__(self):
         kind = self.builder.process_class
@@ -77,7 +77,7 @@ class Process(Single):
 class OutputAction(Action):
     """Action step that outputs values from the workflow context."""
 
-    outputs: Dict[str, str]
+    outputs: dict[str, str]
 
     def do(self, workchain):
         """Return the named outputs from this workflow."""
@@ -172,7 +172,7 @@ def map_(f: PyFunction, *args, **kwargs) -> Step:
     )
 
 
-def concurrently(*fs: Union[PyFunction, Step]) -> Step:
+def concurrently(*fs: PyFunction | Step) -> Step:
     """Construct a Step for several tasks executing concurrently."""
     if len(fs) < 2:
         raise ValueError("Expected at least 2 steps")
@@ -204,12 +204,12 @@ def new_workflow(name: str) -> Outline:
     return Outline(steps=(), label=name)
 
 
-def first(s: Union[PyFunction, Step]) -> Outline:
+def first(s: PyFunction | Step) -> Outline:
     """Return an Outline consisting of a single Step."""
     return Outline(steps=(ensure_step(s),))
 
 
-def ensure_step(s: Union[Step, PyFunction]) -> Step:
+def ensure_step(s: Step | PyFunction) -> Step:
     """Return a Step, given a Step or a PyFunction."""
     if isinstance(s, Step):
         return s
@@ -237,16 +237,16 @@ class Outline:
     concurrently.
     """
 
-    steps: Tuple[Step]
+    steps: tuple[Step]
     #: Sequence of steps constituting the workflow
-    label: Optional[str] = None
+    label: str | None = None
     #: Optional label identifying the workflow
 
     def rename(self, name: str) -> Outline:
         """Return a new outline with a new name."""
         return replace(self, label=name)
 
-    def then(self, step: Union[PyFunction, Step, Outline]) -> Outline:
+    def then(self, step: PyFunction | Step | Outline) -> Outline:
         """Add the provided Step to the outline.
 
         If a PyFunction is provided it is added as a single step.
@@ -288,7 +288,7 @@ class Outline:
             yield from single_steps(step)
 
     @property
-    def parameters(self) -> Set[str]:
+    def parameters(self) -> set[str]:
         """Parameters of the Outline."""
         raw_parameters = toolz.reduce(
             set.union,
@@ -298,7 +298,7 @@ class Outline:
         return raw_parameters - self.all_outputs
 
     @property
-    def returns(self) -> Set[str]:
+    def returns(self) -> set[str]:
         """Values returned by this Outline."""
         ret = set()
         for step in self._single_steps:
@@ -307,7 +307,7 @@ class Outline:
         return ret
 
     @property
-    def all_outputs(self) -> Set[str]:
+    def all_outputs(self) -> set[str]:
         """All outputs of this outline."""
         return toolz.reduce(
             set.union,
@@ -315,7 +315,7 @@ class Outline:
             set(),
         )
 
-    def visualize(self, as_png=False) -> Union[graphviz.Digraph]:
+    def visualize(self, as_png=False) -> graphviz.Digraph:
         """Return a Graphviz visualization of this outline."""
         g = graphviz.Digraph(graph_attr=dict(rankdir="LR"))
 
@@ -368,7 +368,7 @@ class Outline:
 
         return replace(self, steps=tuple(map(transform, self.steps)))
 
-    def with_restarts(self, step_restarts: Dict[PyFunction, int]) -> Outline:
+    def with_restarts(self, step_restarts: dict[PyFunction, int]) -> Outline:
         """Return a copy of this Outline with restarts added to all specified steps.
 
         Examples
@@ -392,7 +392,7 @@ class Outline:
 
         return self.traverse(mapper)
 
-    def replace_steps(self, step_map: Dict[PyFunction, PyFunction]) -> Outline:
+    def replace_steps(self, step_map: dict[PyFunction, PyFunction]) -> Outline:
         """Return a copy of this Outline, replacing the step functions specified.
 
         Any steps that are PyCalcJobs or PyMapJobs executing a PyFunction specified
@@ -436,7 +436,7 @@ class Outline:
     def on(
         self,
         env: engine.ExecutionEnvironment,
-        max_concurrent_machines: Optional[int] = None,
+        max_concurrent_machines: int | None = None,
     ) -> Outline:
         """Return a new Outline with the execution environment set for all steps."""
 

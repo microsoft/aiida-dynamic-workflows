@@ -44,7 +44,7 @@ class FileBasedObjectArray:
         """Return the rank of the array."""
         return len(self.shape)
 
-    def _normalize_key(self, key: Tuple[int, ...]) -> Tuple[int, ...]:
+    def _normalize_key(self, key: tuple[int, ...]) -> tuple[int, ...]:
         if not isinstance(key, tuple):
             key = (key,)
         if len(key) != self.rank:
@@ -72,7 +72,7 @@ class FileBasedObjectArray:
         """Return the filename associated with the given index."""
         return self.folder / self.filename_template.format(index)
 
-    def _key_to_file(self, key: Tuple[int, ...]) -> pathlib.Path:
+    def _key_to_file(self, key: tuple[int, ...]) -> pathlib.Path:
         """Return the filename associated with the given key."""
         index = sum(k * s for k, s in zip(key, self.strides))
         return self._index_to_file(index)
@@ -127,7 +127,7 @@ def _make_strides(shape):
     return tuple(functools.reduce(operator.mul, s, 1) for s in _tails(shape))
 
 
-def _load_all(filenames: Sequence[str]) -> List[Any]:
+def _load_all(filenames: Sequence[str]) -> list[Any]:
     def maybe_read(f):
         return serialize.read(f) if f.is_file() else None
 

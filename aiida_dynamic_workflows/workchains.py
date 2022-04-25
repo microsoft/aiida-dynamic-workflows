@@ -33,7 +33,7 @@ class WorkChainNode(aiida.orm.WorkChainNode):
         """Set an option to the given value."""
         self.set_attribute(name, value)
 
-    def get_options(self) -> Dict[str, Any]:
+    def get_options(self) -> dict[str, Any]:
         """Return the dictionary of options set for this CalcJobNode."""
         options = {}
         for name in self.process_class.spec_options.keys():
@@ -43,7 +43,7 @@ class WorkChainNode(aiida.orm.WorkChainNode):
 
         return options
 
-    def set_options(self, options: Dict[str, Any]) -> None:
+    def set_options(self, options: dict[str, Any]) -> None:
         """Set the options for this CalcJobNode."""
         for name, value in options.items():
             self.set_option(name, value)

@@ -13,7 +13,7 @@ from .common import MapSpec
 from .data import PyRemoteArray, from_aiida_type
 
 
-def input_samples(result: PyRemoteArray) -> Iterable[Dict]:
+def input_samples(result: PyRemoteArray) -> Iterable[dict]:
     """Return an iterable of samples, given a result from a PyMapJob.
 
     Parameters
@@ -58,7 +58,7 @@ def input_samples(result: PyRemoteArray) -> Iterable[Dict]:
         yield toolz.merge(consts, d)
 
 
-def _parameter_spec(result: aiida.orm.Data, axes: Optional[Tuple[str]] = None) -> Dict:
+def _parameter_spec(result: aiida.orm.Data, axes: Optional[tuple[str]] = None) -> dict:
     """Return a dictionary specifying the parameters that produced a given 'result'.
 
     Parameters
