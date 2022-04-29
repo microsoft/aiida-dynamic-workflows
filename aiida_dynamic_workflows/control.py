@@ -76,9 +76,16 @@ def unpause(process: Union[ProcessNode, int, str], timeout: int = 5) -> bool:
     return not process.paused
 
 
-def ensure_daemon_stopped():
-    """Stop the daemon (if it is running)."""
-    client = get_daemon_client()
+def ensure_daemon_stopped(profile: Optional[str] = None):
+    """Stop the daemon (if it is running).
+
+    Parameters
+    ----------
+    profile
+        The profile for which to ensure the daemon is stopped.
+        If not provided then the currently active profile is used.
+    """
+    client = get_daemon_client(profile)
 
     if client.is_daemon_running:
         echo.echo("Stopping the daemon...", nl=False)
@@ -90,7 +97,9 @@ def ensure_daemon_stopped():
     assert not client.is_daemon_running
 
 
-def ensure_daemon_restarted(n_workers: Optional[int] = None):
+def ensure_daemon_restarted(
+    n_workers: Optional[int] = None, profile: Optional[str] = None
+):
     """Restart the daemon (if it is running), or start it (if it is stopped).
 
     Parameters
@@ -98,6 +107,9 @@ def ensure_daemon_restarted(n_workers: Optional[int] = None):
     n_workers
         The number of daemon workers to start. If not provided, the default
         number of workers for this profile is used.
+    profile
+        The profile for which to ensure the daemon is restarted.
+        If not provided then the currently active profile is used.
 
     Notes
     -----
@@ -106,7 +118,7 @@ def ensure_daemon_restarted(n_workers: Optional[int] = None):
     the circus controller. This ensures that any changes in the environment are
     properly picked up by the daemon.
     """
-    client = get_daemon_client()
+    client = get_daemon_client(profile)
     n_workers = n_workers or get_config_option("daemon.default_workers")
 
     if client.is_daemon_running:
