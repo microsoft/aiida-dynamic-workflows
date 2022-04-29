@@ -5,7 +5,7 @@
 
 import os
 import textwrap
-from typing import Any, Dict, Sequence
+from typing import Any, Sequence
 
 import aiida.common
 import aiida.engine

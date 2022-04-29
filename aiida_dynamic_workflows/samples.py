@@ -3,7 +3,7 @@
 
 
 import itertools
-from typing import Dict, Iterable, Optional, Tuple
+from typing import Iterable, Optional
 
 import aiida.orm
 import toolz

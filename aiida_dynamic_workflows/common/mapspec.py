@@ -7,7 +7,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 import functools
 import re
-from typing import Dict, List, Optional, Tuple, Union
 
 from .array import _make_strides
 

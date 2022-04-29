@@ -9,7 +9,7 @@ import copy
 from dataclasses import dataclass
 import os
 import sys
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable
 
 import aiida.engine
 import aiida.orm

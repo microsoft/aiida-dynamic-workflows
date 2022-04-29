@@ -4,7 +4,7 @@
 
 from collections.abc import Mapping
 import datetime
-from typing import List, Optional, T
+from typing import Optional, T
 
 from aiida.common.lang import type_check
 from aiida.schedulers import JobInfo, JobState

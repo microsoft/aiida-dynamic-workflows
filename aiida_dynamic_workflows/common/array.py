@@ -7,7 +7,7 @@ import functools
 import itertools
 import operator
 import pathlib
-from typing import Any, List, Sequence, Tuple
+from typing import Any, Sequence
 
 import numpy as np
 
