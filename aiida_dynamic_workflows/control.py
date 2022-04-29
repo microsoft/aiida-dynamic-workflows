@@ -76,6 +76,20 @@ def unpause(process: Union[ProcessNode, int, str], timeout: int = 5) -> bool:
     return not process.paused
 
 
+def ensure_daemon_stopped():
+    """Stop the daemon (if it is running)."""
+    client = get_daemon_client()
+
+    if client.is_daemon_running:
+        echo.echo("Stopping the daemon...", nl=False)
+        response = client.stop_daemon(wait=True)
+        retcode = daemon.print_client_response_status(response)
+        if retcode:
+            raise RuntimeError(f"Problem stopping Aiida daemon: {response['status']}")
+
+    assert not client.is_daemon_running
+
+
 def ensure_daemon_restarted(n_workers: Optional[int] = None):
     """Restart the daemon (if it is running), or start it (if it is stopped).
 
