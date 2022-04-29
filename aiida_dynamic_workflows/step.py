@@ -3,7 +3,7 @@
 
 
 import copy
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 import toolz
 
@@ -16,8 +16,8 @@ __all__ = ["step"]
 def step(
     f: Callable,
     *,
-    returns: Union[str, Tuple[str]] = "_return_value",
-    resources: Optional[Dict[str, Any]] = None,
+    returns: Union[str, tuple[str]] = "_return_value",
+    resources: Optional[dict[str, Any]] = None,
 ) -> PyFunction:
     """Construct a PyFunction from a Python function.
 
@@ -63,7 +63,7 @@ def step(
     return node
 
 
-def _validate_resources(resources) -> Dict:
+def _validate_resources(resources) -> dict:
     resources = copy.deepcopy(resources)
     if "memory" in resources:
         _validate_memory(resources.pop("memory"))

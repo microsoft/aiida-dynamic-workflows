@@ -7,7 +7,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 import functools
 import re
-from typing import Dict, List, Optional, Tuple, Union
 
 from .array import _make_strides
 
@@ -17,7 +16,7 @@ class ArraySpec:
     """Specification for a named array, with some axes indexed by named indices."""
 
     name: str
-    axes: Tuple[Optional[str]]
+    axes: tuple[str | None]
 
     def __post_init__(self):
         if not self.name.isidentifier():
@@ -33,7 +32,7 @@ class ArraySpec:
         return f"{self.name}[{', '.join(indices)}]"
 
     @property
-    def indices(self) -> Tuple[str]:
+    def indices(self) -> tuple[str]:
         """Return the names of the indices for this array spec."""
         return tuple(x for x in self.axes if x is not None)
 
@@ -42,7 +41,7 @@ class ArraySpec:
         """Return the rank of this array spec."""
         return len(self.axes)
 
-    def validate(self, shape: Tuple[int, ...]):
+    def validate(self, shape: tuple[int, ...]):
         """Raise an exception if 'shape' is not compatible with this array spec."""
         if len(shape) != self.rank:
             raise ValueError(
@@ -60,7 +59,7 @@ class MapSpec:
     >>> partial_reduction = MapSpec.from_string("a[i, :], b[:, k] -> q[i, k]")
     """
 
-    inputs: Tuple[ArraySpec]
+    inputs: tuple[ArraySpec]
     output: ArraySpec
 
     def __post_init__(self):
@@ -84,16 +83,16 @@ class MapSpec:
             )
 
     @property
-    def parameters(self) -> Tuple[str, ...]:
+    def parameters(self) -> tuple[str, ...]:
         """Return the parameter names of this mapspec."""
         return tuple(x.name for x in self.inputs)
 
     @property
-    def indices(self) -> Tuple[str, ...]:
+    def indices(self) -> tuple[str, ...]:
         """Return the index names for this MapSpec."""
         return self.output.indices
 
-    def shape(self, shapes: Dict[str, Tuple[int, ...]]) -> Tuple[int, ...]:
+    def shape(self, shapes: dict[str, tuple[int, ...]]) -> tuple[int, ...]:
         """Return the shape of the output of this MapSpec.
 
         Parameters
@@ -101,7 +100,7 @@ class MapSpec:
         shapes
             Shapes of the inputs, keyed by name.
         """
-        input_names = set(x.name for x in self.inputs)
+        input_names = {x.name for x in self.inputs}
 
         if extra_names := set(shapes.keys()) - input_names:
             raise ValueError(
@@ -125,7 +124,7 @@ class MapSpec:
         shape = []
         for index in self.output.indices:
             relevant_arrays = [x for x in self.inputs if index in x.indices]
-            dim, *rest = [get_dim(x, index) for x in relevant_arrays]
+            dim, *rest = (get_dim(x, index) for x in relevant_arrays)
             if any(dim != x for x in rest):
                 raise ValueError(
                     f"Dimension mismatch for arrays {relevant_arrays} "
@@ -135,7 +134,7 @@ class MapSpec:
 
         return tuple(shape)
 
-    def output_key(self, shape: Tuple[int, ...], linear_index: int) -> Tuple[int, ...]:
+    def output_key(self, shape: tuple[int, ...], linear_index: int) -> tuple[int, ...]:
         """Return a key used for indexing the output of this map.
 
         Parameters
@@ -162,9 +161,9 @@ class MapSpec:
 
     def input_keys(
         self,
-        shape: Tuple[int, ...],
+        shape: tuple[int, ...],
         linear_index: int,
-    ) -> Dict[str, Tuple[Union[slice, int]]]:
+    ) -> dict[str, tuple[slice | int]]:
         """Return keys for indexing inputs of this map.
 
         Parameters
@@ -215,12 +214,12 @@ class MapSpec:
         return str(self)
 
 
-def _parse_index_string(index_string) -> List[Optional[str]]:
+def _parse_index_string(index_string) -> list[str | None]:
     indices = [idx.strip() for idx in index_string.split(",")]
     return [i if i != ":" else None for i in indices]
 
 
-def _parse_indexed_arrays(expr) -> List[ArraySpec]:
+def _parse_indexed_arrays(expr) -> list[ArraySpec]:
     array_pattern = r"(\w+?)\[(.+?)\]"
     return [
         ArraySpec(name, _parse_index_string(indices))

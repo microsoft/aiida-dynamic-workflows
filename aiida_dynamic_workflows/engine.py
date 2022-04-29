@@ -9,7 +9,7 @@ import copy
 from dataclasses import dataclass
 import os
 import sys
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable
 
 import aiida.engine
 import aiida.orm
@@ -29,7 +29,7 @@ class ExecutionEnvironment:
 
     code_label: str
     computer_label: str
-    queue: Optional[Tuple[str, int]] = None
+    queue: tuple[str, int] | None = None
 
     @property
     def code(self):
@@ -77,7 +77,7 @@ def current_conda_environment() -> str:
     return sys.exec_prefix.split(os.sep)[-1]
 
 
-def execution_environment(conda_env: Optional[str], computer: str, queue=None):
+def execution_environment(conda_env: str | None, computer: str, queue=None):
     if conda_env is None:
         conda_env = current_conda_environment()
     code_id = "@".join([conda_env, computer])
@@ -93,7 +93,7 @@ def execution_environment(conda_env: Optional[str], computer: str, queue=None):
     return ExecutionEnvironment(conda_env, computer, queue)
 
 
-def get_queues(computer_name) -> List[str]:
+def get_queues(computer_name) -> list[str]:
     """Return a list of valid queue names for the named computer."""
     computer = aiida.orm.load_computer(computer_name)
     with computer.get_transport() as t:
@@ -116,7 +116,7 @@ class ProcessBuilder(aiida.engine.ProcessBuilder):
     """ProcessBuilder that is serializable."""
 
     def on(
-        self, env: ExecutionEnvironment, max_concurrent_machines: Optional[int] = None
+        self, env: ExecutionEnvironment, max_concurrent_machines: int | None = None
     ) -> ProcessBuilder:
         """Return a new ProcessBuilder, setting it up for execution on 'env'."""
         r = copy.deepcopy(self)
@@ -326,9 +326,9 @@ def apply_some(f: PyFunction, *, max_restarts: int = 1, **kwargs) -> ProcessBuil
 
 def map_(
     f: PyFunction,
-    spec: Union[str, MapSpec],
+    spec: str | MapSpec,
     *,
-    max_concurrent_machines: Optional[int] = None,
+    max_concurrent_machines: int | None = None,
     max_restarts: int = 1,
     **kwargs,
 ) -> aiida.engine.ProcessBuilder:
@@ -380,7 +380,7 @@ def map_(
         spec = MapSpec.from_string(spec)
     elif not isinstance(spec, MapSpec):
         raise TypeError(f"Expected single string or MapSpec, got {spec}")
-    if unknown_params := set(x.name for x in spec.inputs) - set(f.parameters):
+    if unknown_params := {x.name for x in spec.inputs} - set(f.parameters):
         raise ValueError(
             f"{f} cannot be mapped over parameters that "
             f"it does not take: {unknown_params}"
@@ -400,7 +400,7 @@ def map_(
 
 
 def _apply_pyfunction_resources(
-    resources: Dict, options: aiida.engine.ProcessBuilderNamespace
+    resources: dict, options: aiida.engine.ProcessBuilderNamespace
 ) -> None:
     """Apply the resource specification in 'resources' to the CalcJob options 'options'.
 

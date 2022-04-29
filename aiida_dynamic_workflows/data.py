@@ -12,7 +12,7 @@ import operator
 import os
 from pathlib import Path
 import tempfile
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Optional
 
 import aiida.orm
 import cloudpickle
@@ -69,7 +69,7 @@ class PyFunction(aiida.orm.Data):
             self.set_attribute("name", name)
 
     @property
-    def resources(self) -> Dict[str, str]:
+    def resources(self) -> dict[str, str]:
         """Resources required by this function."""
         return self.get_attribute("resources")
 
@@ -84,12 +84,12 @@ class PyFunction(aiida.orm.Data):
         return self.get_attribute("name")
 
     @property
-    def parameters(self) -> List[str]:
+    def parameters(self) -> list[str]:
         """Parameters of this function."""
         return self.get_attribute("parameters")
 
     @property
-    def returns(self) -> Optional[List[str]]:
+    def returns(self) -> Optional[list[str]]:
         """List of names returned by this function."""
         return self.get_attribute("returns")
 
@@ -112,7 +112,7 @@ class PyFunction(aiida.orm.Data):
         """Call the function stored in this object."""
         return self.callable(*args, **kwargs)
 
-    def _get_objects_to_hash(self) -> List[Any]:
+    def _get_objects_to_hash(self) -> list[Any]:
         objects = super()._get_objects_to_hash()
 
         # XXX: this depends on the specifics of the implementation
@@ -127,7 +127,7 @@ class PyFunction(aiida.orm.Data):
             return objects
 
 
-def _parameters(f: Callable) -> List[str]:
+def _parameters(f: Callable) -> list[str]:
     valid_kinds = [
         getattr(inspect.Parameter, k) for k in ("POSITIONAL_OR_KEYWORD", "KEYWORD_ONLY")
     ]
@@ -283,7 +283,7 @@ class PyRemoteArray(aiida.orm.RemoteData):
         return np.ma.array(buff, mask=self.mask)
 
     @property
-    def shape(self) -> Tuple[int, ...]:
+    def shape(self) -> tuple[int, ...]:
         """Shape of this remote array."""
         return tuple(self.get_attribute("shape"))
 
@@ -295,9 +295,9 @@ class PyRemoteArray(aiida.orm.RemoteData):
     @property
     def mask(self) -> np.ndarray:
         """Return the mask for the missing elements of the array."""
-        existing_files = set(
+        existing_files = {
             v["name"] for v in self.listdir_withattributes() if not v["isdir"]
-        )
+        }
         return np.array(
             [self._file(i) not in existing_files for i in range(self.size)],
             dtype=bool,
@@ -324,12 +324,12 @@ class PyArray(PyData):
         self._cached = None
 
     @property
-    def shape(self) -> Tuple[int, ...]:
+    def shape(self) -> tuple[int, ...]:
         """Shape of this remote array."""
         return tuple(self.get_attribute("shape"))
 
     @property
-    def dtype(self) -> Tuple[int, ...]:
+    def dtype(self) -> tuple[int, ...]:
         """Shape of this remote array."""
         return np.dtype(self.get_attribute("dtype"))
 
@@ -431,7 +431,7 @@ def _(x):
 
 
 @functools.singledispatch
-def array_shape(x) -> Tuple[int, ...]:
+def array_shape(x) -> tuple[int, ...]:
     """Return the shape of 'x'."""
     try:
         return tuple(map(int, x.shape))

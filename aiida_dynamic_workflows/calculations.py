@@ -5,7 +5,7 @@
 
 import os
 import textwrap
-from typing import Any, Dict, Sequence
+from typing import Any, Sequence
 
 import aiida.common
 import aiida.engine
@@ -528,11 +528,11 @@ def merge_remote_arrays(**kwargs: PyRemoteArray) -> PyRemoteArray:
     """
     arrays = [kwargs[k] for k in sorted(kwargs.keys())]
 
-    computer, *other_computers = [x.computer for x in arrays]
+    computer, *other_computers = (x.computer for x in arrays)
     if any(computer.uuid != x.uuid for x in other_computers):
         raise ValueError("Need to be on same computer")
 
-    shape, *other_shapes = [x.shape for x in arrays]
+    shape, *other_shapes = (x.shape for x in arrays)
     if any(shape != x for x in other_shapes):
         raise ValueError("Arrays need to be same shape")
 
@@ -584,7 +584,7 @@ def num_mapjob_tasks(p: aiida.orm.ProcessNode) -> int:
     return np.sum(~expected_mask(mapspec, mapped_kwargs))
 
 
-def expected_mask(mapspec: common.MapSpec, inputs: Dict[str, Any]) -> np.ndarray:
+def expected_mask(mapspec: common.MapSpec, inputs: dict[str, Any]) -> np.ndarray:
     """Return the result mask that one should expect, given a MapSpec and inputs.
 
     When executing a PyMapJob over inputs that have a mask applied, we expect the
@@ -614,7 +614,7 @@ def expected_mask(mapspec: common.MapSpec, inputs: Dict[str, Any]) -> np.ndarray
     return np.array([is_masked(x) for x in range(map_size)]).reshape(map_shape)
 
 
-def array_job_spec(mapspec: common.MapSpec, inputs: Dict[str, Any]) -> str:
+def array_job_spec(mapspec: common.MapSpec, inputs: dict[str, Any]) -> str:
     """Return a job-array task specification, given a MapSpec and inputs.
 
     Parameters

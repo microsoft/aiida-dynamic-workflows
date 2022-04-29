@@ -4,7 +4,7 @@
 
 from collections.abc import Mapping
 import datetime
-from typing import List, Optional, T
+from typing import Optional, T
 
 from aiida.common.lang import type_check
 from aiida.schedulers import JobInfo, JobState
@@ -93,7 +93,7 @@ class SlurmSchedulerWithJobArray(SlurmScheduler):
             return CalcJob.exit_codes.ERROR_SCHEDULER_OUT_OF_WALLTIME
 
 
-def merge_job_arrays(jobs: List[JobInfo]) -> List[JobInfo]:
+def merge_job_arrays(jobs: list[JobInfo]) -> list[JobInfo]:
     """Merge JobInfos from jobs in the same Slurm Array into a single JobInfo."""
     mergers = {
         "job_id": toolz.compose(job_array_id, toolz.first),
@@ -116,7 +116,7 @@ def merge_job_arrays(jobs: List[JobInfo]) -> List[JobInfo]:
     ]
 
 
-def total_job_state(states: List[JobState]) -> JobState:
+def total_job_state(states: list[JobState]) -> JobState:
     # Order is important here
     possible_states = [
         JobState.UNDETERMINED,
