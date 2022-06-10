@@ -4,6 +4,7 @@ channels:
 dependencies:
     # General dependencies
     - python=3.9
+    - aiida-core>=2.0.0
     - graphviz
     # dev dependencies
     - pre-commit
